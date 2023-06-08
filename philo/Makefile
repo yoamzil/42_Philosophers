@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -pthread
 NAME = philo
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
