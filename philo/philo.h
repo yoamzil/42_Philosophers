@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct s_philo
 {
@@ -20,6 +21,7 @@ typedef struct s_data
     int must_eat;
     int full;
     int died;
+    pthread_mutex_t *forks;
 } t_data;
 
 #endif
