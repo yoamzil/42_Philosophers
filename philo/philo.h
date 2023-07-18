@@ -18,6 +18,8 @@ typedef struct s_data
     int time_to_eat;
     int time_to_sleep;
     int must_eat;
+    int full;
+    int died;
 } t_data;
 
 #endif
