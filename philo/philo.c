@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/07/18 19:14:04 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/07/19 21:17:14 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,26 @@ int init_mutex(t_data *data)
     }
     return (0);
 }
+int	init_philosophers(t_data *data, t_philo *philo)
+{
+	int i;
 
-int	init_data(t_data *data, char **argv)
+	i = data->num_of_philos;
+	while (i > 0)
+	{
+		philo->id = i;
+		// philo->x_ate = 0;
+		philo->left_fork = i;
+		philo->right_fork = (i + 1) % data->num_of_philos;
+		// philo->t_last_meal = 0;
+		// philo->rules = rules;
+		// printf("philo %d: left fork: %d, right fork: %d\n", philo->id, philo->left_fork, philo->right_fork);
+		i--;
+	}
+	return (0);
+}
+
+int	init_data(t_data *data, t_philo *philo, char **argv)
 {
 	data->num_of_philos = ft_atoi(argv[1]);
 	data->time_to_die = ft_atoi(argv[2]);
@@ -100,13 +118,16 @@ int	init_data(t_data *data, char **argv)
 		data->must_eat = -1;
 	if (init_mutex(data))
 		return (2);
-	// init_philosophers(data);
+	init_philosophers(data, philo);
 	return (0);
 }
+
+
 
 int	main(int argc, char **argv)
 {
 	t_data	data;
+	t_philo	philo;
 	
 	if (argc < 5 || argc > 6)
 	{
@@ -118,7 +139,7 @@ int	main(int argc, char **argv)
 		printf("Error: Wrong arguments\n");
 		return (1);
 	}
-	if (init_data(&data, argv))
+	if (init_data(&data, &philo, argv))
 	{
 		printf("Error: Wrong arguments\n");
 		return (1);

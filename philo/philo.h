@@ -7,8 +7,9 @@
 
 typedef struct s_philo
 {
-    int num;
     int id;
+    int left_fork;
+    int right_fork;
     struct s_data *data;
 } t_philo;
 
@@ -22,6 +23,7 @@ typedef struct s_data
     int full;
     int died;
     pthread_mutex_t *forks;
+    t_philo *philo;
 } t_data;
 
 #endif
