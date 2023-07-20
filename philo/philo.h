@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 typedef struct s_philo
 {
@@ -22,6 +23,8 @@ typedef struct s_data
     int must_eat;
     int full;
     int died;
+    long first_timestamp;
+    long current_timestamp;
     pthread_mutex_t *forks;
     t_philo *philo;
 } t_data;

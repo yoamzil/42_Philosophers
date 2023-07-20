@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/07/19 21:17:14 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/07/20 01:06:45 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,51 @@ int	init_data(t_data *data, t_philo *philo, char **argv)
 	return (0);
 }
 
+#include <sys/time.h>
+
+long long timestamp(void) {
+    struct timeval t;
+    gettimeofday(&t, NULL);
+
+    long long sec_to_ms = (long long)t.tv_sec * 1000;
+    long long usec_to_ms = (long long)t.tv_usec / 1000;
+
+    return sec_to_ms + usec_to_ms;
+}
+
+void	*routine(void *)
+{
+	// printf("dkhel\n");
+	// 	exit (0);
+	// t_philo *philo = (t_philo *)test;
+	// printf("philo %d: left fork: %d, right fork: %d\n", philo->id, philo->left_fork, philo->right_fork);
+	return NULL;
+}
+int starting_thread(t_data *data)
+{
+    int i = 0;
+    // t_philo *philo = data->philo;
+	pthread_t	thread_id;
+
+    data->first_timestamp = timestamp();
+	// printf("first_timestamp: %lu\n", data->first_timestamp);
+    while (i < data->num_of_philos)
+	{
+		
+        if (pthread_create(&thread_id, NULL, routine, NULL))
+            return 1;
+
+        data->current_timestamp = timestamp();
+        i++;
+		// printf("khrej\n");
+		// printf("current_timestamp: %lu\n", data->current_timestamp);
+	}
+
+    // death_checker(data);
+    // exit_launcher(data);
+
+    return 0;
+}
 
 
 int	main(int argc, char **argv)
@@ -144,4 +189,6 @@ int	main(int argc, char **argv)
 		printf("Error: Wrong arguments\n");
 		return (1);
 	}
+	if (starting_thread(&data))
+		return (1);
 }
