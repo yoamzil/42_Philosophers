@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/07/20 18:23:59 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/07/20 19:03:40 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,46 +57,46 @@ int	checker(char **argv)
     }
     return (0);
 }
+int init_mutex(t_data *data)
+{
+    int i;
 
-// int init_mutex(t_data *data)
-// {
-//     int i;
-//     int num_of_philos;
-	
-// 	i = 0;
-// 	num_of_philos = data->num_of_philos;
-// 	data->forks = malloc(sizeof(pthread_mutex_t) * num_of_philos);
-//     if (data->forks == NULL)
-//         return (1);
-//     while (i < num_of_philos)
-// 	{
-//         if (pthread_mutex_init(&(data->forks[i]), NULL))
-// 		{
-//             free(data->forks);
-//             return (1);
-// 		}
-//         i++;
-//     }
-//     return (0);
-// }
-// int	init_philosophers(t_data *data, t_philo *philo)
-// {
-// 	int i;
+    i = 0;
+	while (i < data->num_of_philos)
+    {
+        if (pthread_mutex_init(&data->forks[i], NULL) != 0)
+        {
+            perror("Error: Failed to initialize mutex");
+            return 1;
+        }
+        i++;
+    }
+    i = 0;
+    while (i < data->num_of_philos)
+    {
+        data->philo[i].left_fork = &data->forks[i];
+        data->philo[i].right_fork = &data->forks[(i + 1) % data->num_of_philos];
+        i++;
+    }
 
-// 	i = data->num_of_philos;
-// 	while (i > 0)
-// 	{
-// 		philo->id = i;
-// 		// philo->x_ate = 0;
-// 		philo->left_fork = i;
-// 		philo->right_fork = (i + 1) % data->num_of_philos;
-// 		// philo->t_last_meal = 0;
-// 		// philo->rules = rules;
-// 		// printf("philo %d: left fork: %d, right fork: %d\n", philo->id, philo->left_fork, philo->right_fork);
-// 		i--;
-// 	}
-// 	return (0);
-// }
+    return 0;
+}
+
+int	init_philosophers(t_data *data)
+{
+	int i;
+
+	i = data->num_of_philos;
+	while (i > 0)
+	{
+		data->philo[i].data = data;
+		data->philo[i].id = i;
+		pthread_mutex_init(&data->philo[i].mutex, NULL);
+		i--;
+	}
+	return (0);
+}
+
 int allocation(t_data *data)
 {
     data->thread_id = malloc(sizeof(pthread_t) * data->num_of_philos);
@@ -137,8 +137,8 @@ int	init_data(t_data *data, char **argv)
 		data->must_eat = -1;
 	if (allocation(data))
 		return (1);
-	// if (init_mutex(data))
-		// return (2);
+	if (init_mutex(data))
+		return (1);
 	// init_philosophers(data, philo);
 	return (0);
 }
