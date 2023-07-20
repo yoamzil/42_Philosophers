@@ -9,13 +9,14 @@
 typedef struct s_philo
 {
     int id;
-    int left_fork;
-    int right_fork;
+    pthread_mutex_t *left_fork;
+    pthread_mutex_t *right_fork;
     struct s_data *data;
 } t_philo;
 
 typedef struct s_data
 {
+    pthread_t   *thread_id;
     int num_of_philos;
     int time_to_die;
     int time_to_eat;
