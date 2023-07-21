@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/07/20 19:03:40 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/07/21 01:07:53 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,14 @@ int	init_philosophers(t_data *data)
 {
 	int i;
 
-	i = data->num_of_philos;
-	while (i > 0)
+	i = data->num_of_philos - 1;
+	while (i >= 0)
 	{
 		data->philo[i].data = data;
 		data->philo[i].id = i;
 		pthread_mutex_init(&data->philo[i].mutex, NULL);
+		// printf("khrej\n");
+		// exit (0);
 		i--;
 	}
 	return (0);
@@ -110,7 +112,8 @@ int allocation(t_data *data)
         return (1);
     }
     data->philo = malloc(sizeof(t_philo) * data->num_of_philos);
-    if (!data->philo) {
+    if (!data->philo)
+	{
         // free(data->thread_id);
         // free(data->forks);
         return (1);
@@ -139,7 +142,7 @@ int	init_data(t_data *data, char **argv)
 		return (1);
 	if (init_mutex(data))
 		return (1);
-	// init_philosophers(data, philo);
+	init_philosophers(data);
 	return (0);
 }
 
