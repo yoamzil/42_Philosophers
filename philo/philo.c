@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/07/21 01:07:53 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/09 18:43:09 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,11 +158,29 @@ long long timestamp(void) {
     return sec_to_ms + usec_to_ms;
 }
 
-void	*routine(void *)
+void	eating(t_philo *philo)
 {
+	
+}
+
+void	*routine(void *void_philo)
+{
+	int	i;
+	t_philo	*philo;
+	// t_data	*data;
+	
+	i = 0;
+	philo = (t_philo *)void_philo;
+	// data = philo->data;
 	// printf("dkhel\n");
-	// 	exit (0);
-	// t_philo *philo = (t_philo *)test;
+	// exit (1);
+	if (philo->id % 2)
+		usleep(15000);
+	while (philo->data->died == 0)
+	{
+		eating(philo);
+	}
+	// (void)void_philo;
 	// printf("philo %d: left fork: %d, right fork: %d\n", philo->id, philo->left_fork, philo->right_fork);
 	return NULL;
 }
@@ -176,8 +194,7 @@ int starting_thread(t_data *data)
 	// printf("first_timestamp: %lu\n", data->first_timestamp);
     while (i < data->num_of_philos)
 	{
-		
-        if (pthread_create(&thread_id, NULL, routine, NULL))
+		if (pthread_create(&thread_id, NULL, routine, NULL))
             return 1;
 
         data->current_timestamp = timestamp();
