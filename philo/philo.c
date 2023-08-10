@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/10 12:52:59 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/10 20:01:50 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int init_mutex(t_philo *philo)
 			return 1;
 		}
 		i++;
-	}printf("hello\n");
+	}
 	i = 0;
 	while (i < philo->num_of_philos)
 	{
@@ -90,6 +90,9 @@ int init_philosophers(t_philo *philo)
 	while (i > 0)
 	{
 		philo[i].id = i;
+		philo[i].time_left = philo->data->time_to_die;
+		philo[i].num_of_meals = 0;
+		philo[i].ate = 0;
 		pthread_mutex_init(&philo[i].mutex, NULL);
 		// printf("khrej\n");
 		// exit (0);
@@ -114,8 +117,6 @@ int allocation(t_philo *philo)
 	philo->thread_id = malloc(sizeof(pthread_t*) * philo->num_of_philos);
 	if (!philo->thread_id)
 		return (1);
-
-	printf("khedama\n");
 	
 	return (0);
 }
@@ -144,12 +145,10 @@ int init_data(t_philo *philo, char **argv)
 	
 	if (init_mutex(philo))
 		return (1);
-	printf("hi\n");
 	init_philosophers(philo);
 	return (0);
 }
 
-#include <sys/time.h>
 
 long long timestamp(void)
 {
@@ -161,6 +160,20 @@ long long timestamp(void)
 
 	return sec_to_ms + usec_to_ms;
 }
+int ft_usleep(long long time)
+{
+	long long start;
+	long long elapsed_time;
+
+	start = timestamp();
+	elapsed_time = 0;
+	while (elapsed_time < time)
+	{
+		usleep(1000);
+		elapsed_time = timestamp() - start;
+	}
+	return 0;
+}
 
 void eating(t_philo *philo)
 {
@@ -171,19 +184,17 @@ void eating(t_philo *philo)
 	// Lock the left fork
 	pthread_mutex_lock(&(philo->forks[philo->left_fork]));
 	printf("has taken a fork\n");
-	// action_print(data, philo->id, "has taken a fork");
 
 	// Lock the right fork
 	pthread_mutex_lock(&(philo->forks[philo->right_fork]));
 	printf("has taken a fork\n");
-	// action_print(data, philo->id, "has taken a fork");
 
-	// // Lock the meal check mutex to prevent race conditions
-	// pthread_mutex_lock(&(data->meal_check));
-	// action_print(data, philo->id, "is eating");
+	philo->ate = 1;
+	philo->time_left = timestamp() + philo->data->time_to_die;
 
 	// // Update the philosopher's last meal timestamp
 	philo->last_meal = timestamp();
+	printf("eating\n");
 
 	// // Unlock the meal check mutex to allow other philosophers to eat
 	// pthread_mutex_unlock(&(data->meal_check));
@@ -192,7 +203,8 @@ void eating(t_philo *philo)
 	// smart_sleep(data->time_to_eat, data);
 
 	// // Increment the number of times the philosopher has eaten
-	// (philo->num_of_meals)++;
+	(philo->num_of_meals)++;
+	ft_usleep(philo->data->time_to_eat);
 
 	// // Unlock both forks after eating
 	pthread_mutex_unlock(&(philo->forks[philo->left_fork]));
