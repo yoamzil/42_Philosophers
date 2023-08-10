@@ -15,6 +15,7 @@ typedef struct s_philo
     int left_fork;
     int right_fork;
     int num_of_philos;
+    long long last_meal;
     pthread_mutex_t mutex;
     struct s_data *data;
 } t_philo;

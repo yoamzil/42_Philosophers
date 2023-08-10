@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/10 12:38:11 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/10 12:52:59 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,11 +170,12 @@ void eating(t_philo *philo)
 
 	// Lock the left fork
 	pthread_mutex_lock(&(philo->forks[philo->left_fork]));
-	printf("has taken a fork");
+	printf("has taken a fork\n");
 	// action_print(data, philo->id, "has taken a fork");
 
 	// Lock the right fork
-	// pthread_mutex_lock(&(data->forks[philo->right_fork]));
+	pthread_mutex_lock(&(philo->forks[philo->right_fork]));
+	printf("has taken a fork\n");
 	// action_print(data, philo->id, "has taken a fork");
 
 	// // Lock the meal check mutex to prevent race conditions
@@ -182,7 +183,7 @@ void eating(t_philo *philo)
 	// action_print(data, philo->id, "is eating");
 
 	// // Update the philosopher's last meal timestamp
-	// philo->t_last_meal = timestamp();
+	philo->last_meal = timestamp();
 
 	// // Unlock the meal check mutex to allow other philosophers to eat
 	// pthread_mutex_unlock(&(data->meal_check));
@@ -194,11 +195,11 @@ void eating(t_philo *philo)
 	// (philo->num_of_meals)++;
 
 	// // Unlock both forks after eating
-	// pthread_mutex_unlock(&(data->forks[philo->left_fork]));
-	// pthread_mutex_unlock(&(data->forks[philo->right_fork]));
+	pthread_mutex_unlock(&(philo->forks[philo->left_fork]));
+	pthread_mutex_unlock(&(philo->forks[philo->right_fork]));
 }
 
-void *routine(void *void_philo)
+void	*routine(void *void_philo)
 {
 	int i;
 	t_philo *philo;
@@ -211,12 +212,13 @@ void *routine(void *void_philo)
 	// exit (1);
 	// if (philo->id % 2)
 	// 	usleep(15000);
-	while (philo->data->died == 0)
+	while (1)
 	{
-		printf("dkhel\n");
-		exit (0);
+		// printf("dkhellll\n");
+		// exit (0);
 		eating(philo);
 
+		
 		if (philo->data->full)
 			break;
 	}
@@ -234,7 +236,7 @@ int starting_thread(t_philo *philo)
 	// printf("first_timestamp: %lu\n", data->first_timestamp);
 	while (i < philo->num_of_philos)
 	{
-		if (pthread_create(&philo->thread_id[i], NULL, routine, NULL))
+		if (pthread_create(&philo->thread_id[i], NULL, routine, philo))
 			return 1;
 
 		philo->data->current_timestamp = timestamp();
@@ -275,6 +277,6 @@ int main(int argc, char **argv)
 		printf("Error: Wrong arguments\n");
 		return (1);
 	}
-	// if (starting_thread(philo))
-		// return (1);
+	if (starting_thread(philo))
+		return (1);
 }
