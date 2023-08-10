@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/10 20:01:50 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/10 20:03:12 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,10 +177,6 @@ int ft_usleep(long long time)
 
 void eating(t_philo *philo)
 {
-	t_data *data;
-	
-	data = philo->data;
-
 	// Lock the left fork
 	pthread_mutex_lock(&(philo->forks[philo->left_fork]));
 	printf("has taken a fork\n");
