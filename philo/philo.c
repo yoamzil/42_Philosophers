@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/11 16:22:08 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/11 22:53:56 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,26 @@ int init_mutex(t_philo *philo, pthread_mutex_t *forks)
 	return 0;
 }
 
+long timestamp(void)
+{
+	struct timeval t;
+	gettimeofday(&t, NULL);
+
+	long sec_to_ms = (long)t.tv_sec * 1000;
+	long usec_to_ms = (long)t.tv_usec / 1000;
+
+	return (sec_to_ms + usec_to_ms);
+}
 int init_philosophers(t_philo *philo)
 {
 	int i;
+	long	time;
 
+	time = timestamp();
 	i = 0;
 	while (i < philo->num_of_philos)
 	{
+		philo[i].first_timestamp = time;
 		philo[i].id = i + 1;
 		philo[i].time_left = philo->time_to_die;
 		philo[i].num_of_meals = 0;
@@ -133,16 +146,6 @@ int init_data(t_philo *philo, char **argv)
 	return (0);
 }
 
-long timestamp(void)
-{
-	struct timeval t;
-	gettimeofday(&t, NULL);
-
-	long sec_to_ms = (long)t.tv_sec * 1000;
-	long usec_to_ms = (long)t.tv_usec / 1000;
-
-	return sec_to_ms + usec_to_ms;
-}
 int ft_usleep(long long time)
 {
 	long start;
@@ -201,6 +204,8 @@ int ft_usleep(long long time)
 void printing(t_philo philo, char *str)
 {
 	pthread_mutex_lock(&philo.m1);
+	// printf("first time: %ld\n", philo.first_timestamp);
+	// printf("current time: %ld\n", timestamp());
 	printf("%ld %d %s\n", timestamp() - philo.first_timestamp, philo.id, str);
 	pthread_mutex_unlock(&philo.m1);
 }
@@ -217,10 +222,11 @@ void eating(t_philo *philo)
 	pthread_mutex_unlock(&philo->m1);
 	ft_usleep(philo->time_to_eat);
 	pthread_mutex_lock(&philo->m1);
-	philo->ate++;
+	philo->num_of_meals++;
 	pthread_mutex_unlock(&philo->m1);
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
+	// exit(0);
 }
 void *routine(void *void_philo)
 {
@@ -233,12 +239,12 @@ void *routine(void *void_philo)
 	{
 		// printing(*philo, "is thinking");
 		printf("philo: %d is thinking\n", philo->id);
-		// eating(philo);
+		eating(philo);
 		// printing(*philo, "is sleeping");
 		printf("philo: %d is sleeping\n", philo->id);
 		ft_usleep(philo->time_to_sleep);
 	}
-	return void_philo;
+	// return void_philo;
 }
 int starting_thread(pthread_t *threads, t_philo *philo)
 {
@@ -247,7 +253,6 @@ int starting_thread(pthread_t *threads, t_philo *philo)
 	// pthread_t thread_id;
 
 	printf("startint threads\n");
-	philo->first_timestamp = timestamp();
 	// printf("first_timestamp: %lu\n", data->first_timestamp);
 	while (i < philo->num_of_philos)
 	{
@@ -306,6 +311,9 @@ int main(int argc, char **argv)
 	if (!philo || !threads || !forks)
 		return (1);
 	philo->num_of_philos = variable;
+	
+	printf("first time: %ld\n", philo->first_timestamp);
+	// exit (0);
 	if (init_data(philo, argv) || init_mutex(philo, forks))
 	{
 		printf("Error: Wrong arguments\n");
