@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -pthread
+CFLAGS = -Wall -Werror -Wextra -pthread -fsanitize=address
 NAME = philo
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
