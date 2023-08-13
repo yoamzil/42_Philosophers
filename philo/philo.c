@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/13 19:27:24 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/13 19:59:04 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,9 @@ int init_data(t_philo *philo, char **argv)
 
 void printing(t_philo *philo, char *str)
 {
-	pthread_mutex_lock(&philo->m2);
+	// pthread_mutex_lock(&philo->m2);
 	printf("%ld %d %s\n", timestamp() - philo->first_timestamp, philo->id, str);
-	pthread_mutex_unlock(&philo->m2);
+	// pthread_mutex_unlock(&philo->m2);
 }
 int	death_checker(t_philo *philo)
 {
@@ -151,10 +151,10 @@ int	death_checker(t_philo *philo)
 			return (0);
 		if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
 		{
-			pthread_mutex_lock(&philo[i].m2);
+			// pthread_mutex_lock(&philo[i].m1);
 			philo[i].died = 1;
-			pthread_mutex_unlock(&philo[i].m2);
-			pthread_mutex_lock(&philo[i].m1);
+			// pthread_mutex_unlock(&philo[i].m1);
+			// pthread_mutex_lock(&philo[i].m2);
 			printf("%ld %d %s\n", timestamp() - philo[i].first_timestamp, philo[i].id, "died");
 			// exit (0);
 			return (0);
@@ -173,13 +173,13 @@ void eating(t_philo *philo)
 	pthread_mutex_lock(philo->right_fork);
 	printing(philo, "has taken a fork");
 	printing(philo, "is eating");
-	pthread_mutex_lock(&philo->m1);
+	// pthread_mutex_lock(&philo->m1);
 	philo->last_meal = timestamp();
-	pthread_mutex_unlock(&philo->m1);
+	// pthread_mutex_unlock(&philo->m1);
 	usleep(philo->time_to_eat * 1000);
-	pthread_mutex_lock(&philo->m1);
+	// pthread_mutex_lock(&philo->m1);
 	philo->num_of_meals++;
-	pthread_mutex_unlock(&philo->m1);
+	// pthread_mutex_unlock(&philo->m1);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 }
@@ -188,7 +188,7 @@ void *routine(void *void_philo)
 	t_philo *philo;
 	philo = (t_philo *)void_philo;
 	if (philo->id % 2 == 0)
-		usleep(100);
+		usleep(200);
 	while (!philo->died)
 	{
 		printing(philo, "is thinking");
