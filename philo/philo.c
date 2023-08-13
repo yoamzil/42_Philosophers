@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/13 14:24:49 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/13 14:32:45 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,18 +116,8 @@ int init_philosophers(t_philo *philo, char **argv)
 	return (0);
 }
 
-int allocation(t_philo *philo)
-{
-	
-	philo->data = malloc(sizeof(t_data));
-	if (!philo->data)
-		return (1);
-	return (0);
-}
 int init_data(t_philo *philo, char **argv)
 {
-	if (allocation(philo))
-		return (1);
 	init_philosophers(philo, argv);
 	if (philo->num_of_philos < 1 || philo->time_to_die < 0 || philo->time_to_eat < 0 || philo->time_to_sleep < 0)
 		return (1);
@@ -174,10 +164,10 @@ void *routine(void *void_philo)
 		usleep(100);
 	while (1)
 	{
+		printing(philo, "is thinking");
 		eating(philo);
 		printing(philo, "is sleeping");
 		usleep(philo->time_to_sleep * 1000);
-		printing(philo, "is thinking");
 	}
 	// return void_philo;
 }
@@ -188,6 +178,7 @@ int starting_thread(pthread_t *threads, t_philo *philo)
 	{
 		if (pthread_create(&threads[i], NULL, routine, &philo[i]))
 		{
+			printf("Failed creating threads\n");
 			return 1;
 		}
 		i++;
