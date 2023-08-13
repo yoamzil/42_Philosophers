@@ -18,6 +18,7 @@ typedef struct s_philo
     int num_of_philos;
     long last_meal;
     pthread_mutex_t m1;
+    pthread_mutex_t m2;
     struct s_data *data;
     int time_to_sleep;
     int full;
