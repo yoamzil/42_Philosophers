@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/13 14:32:45 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/13 17:36:52 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,12 @@ int init_philosophers(t_philo *philo, char **argv)
 	while (i < philo->num_of_philos)
 	{
 		philo[i].first_timestamp = time;
+		philo[i].last_meal = time;
 		philo[i].id = i + 1;
-		philo[i].time_to_die = ft_atoi(argv[2]);
 		philo[i].num_of_meals = 0;
 		philo[i].ate = 0;
+		philo[i].died = 0;
+		philo[i].time_to_die = ft_atoi(argv[2]);
 		philo[i].time_to_eat = ft_atoi(argv[3]);
 		philo[i].time_to_sleep = ft_atoi(argv[4]);
 		i++;
@@ -147,7 +149,7 @@ void eating(t_philo *philo)
 	printing(philo, "has taken a fork");
 	printing(philo, "is eating");
 	pthread_mutex_lock(&philo->m1);
-	philo->last_meal = timestamp() - philo->first_timestamp;
+	philo->last_meal = timestamp();
 	pthread_mutex_unlock(&philo->m1);
 	usleep(philo->time_to_eat * 1000);
 	pthread_mutex_lock(&philo->m1);
@@ -162,14 +164,14 @@ void *routine(void *void_philo)
 	philo = (t_philo *)void_philo;
 	if (philo->id % 2 == 0)
 		usleep(100);
-	while (1)
+	while (!philo->died)
 	{
 		printing(philo, "is thinking");
 		eating(philo);
 		printing(philo, "is sleeping");
 		usleep(philo->time_to_sleep * 1000);
 	}
-	// return void_philo;
+	return NULL;
 }
 int starting_thread(pthread_t *threads, t_philo *philo)
 {
