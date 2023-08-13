@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/13 17:36:52 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/13 19:27:24 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,31 @@ void printing(t_philo *philo, char *str)
 	printf("%ld %d %s\n", timestamp() - philo->first_timestamp, philo->id, str);
 	pthread_mutex_unlock(&philo->m2);
 }
+int	death_checker(t_philo *philo)
+{
+	int i;
+
+	i = 0;
+	while (i < philo->num_of_philos)
+	{
+		if (philo->num_of_philos == 6 && philo[i].num_of_meals > philo[i].must_eat)
+			return (0);
+		if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
+		{
+			pthread_mutex_lock(&philo[i].m2);
+			philo[i].died = 1;
+			pthread_mutex_unlock(&philo[i].m2);
+			pthread_mutex_lock(&philo[i].m1);
+			printf("%ld %d %s\n", timestamp() - philo[i].first_timestamp, philo[i].id, "died");
+			// exit (0);
+			return (0);
+		}
+		i++;
+		if (i == philo->num_of_philos)
+			i = 0;
+	}
+	return (1);
+}
 
 void eating(t_philo *philo)
 {
@@ -185,6 +210,8 @@ int starting_thread(pthread_t *threads, t_philo *philo)
 		}
 		i++;
 	}
+	if(!death_checker(philo))
+		return (0);
 	i = 0;
 	while (i < philo->num_of_philos)
 	{
@@ -192,24 +219,24 @@ int starting_thread(pthread_t *threads, t_philo *philo)
 			return 1;
 		i++;
 	}
-
-	// death_checker(data);
+		printf("hmaaa\n");
+		exit (0);
 	// exit_launcher(data);
 
 	return 0;
 }
-int	threads_join(pthread_t *threads, t_philo *philo)
-{
-	int i;
+// int	threads_join(pthread_t *threads, t_philo *philo)
+// {
+// 	int i;
 
-	i = 0;
-	while (i < philo->num_of_philos)
-	{
-		if (pthread_join(threads[i++], NULL))
-			return 1;
-	}
-	return 0;
-}
+// 	i = 0;
+// 	while (i < philo->num_of_philos)
+// 	{
+// 		if (pthread_join(threads[i++], NULL))
+// 			return 1;
+// 	}
+// 	return 0;
+// }
 
 
 int main(int argc, char **argv)
@@ -244,5 +271,6 @@ int main(int argc, char **argv)
 		return (1);
 	}
 	starting_thread(threads, philo);
-	threads_join(threads, philo);
+	
+	// threads_join(threads, philo);
 }
