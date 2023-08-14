@@ -6,17 +6,17 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 12:09:12 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 12:42:29 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int ft_atoi(const char *str)
+int	ft_atoi(const char *str)
 {
-	int i;
-	int number;
-	int sign;
+	int	i;
+	int	number;
+	int	sign;
 
 	i = 0;
 	number = 0;
@@ -39,11 +39,11 @@ int ft_atoi(const char *str)
 	return (number * sign);
 }
 
-int checker(char **argv)
+int	checker(char **argv)
 {
-	int i;
-	int j;
-	
+	int	i;
+	int	j;
+
 	i = 1;
 	while (argv[i])
 	{
@@ -59,9 +59,9 @@ int checker(char **argv)
 	return (0);
 }
 
-int init_mutex(t_philo *philo, pthread_mutex_t *forks)
+int	init_mutex(t_philo *philo, pthread_mutex_t *forks)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < philo->num_of_philos)
@@ -78,25 +78,26 @@ int init_mutex(t_philo *philo, pthread_mutex_t *forks)
 	return (0);
 }
 
-long timestamp(void)
+long	timestamp(void)
 {
-	struct timeval t;
-	long time;
+	struct timeval	t;
+	long			time;
 
 	gettimeofday(&t, NULL);
 	time = t.tv_sec * 1000 + t.tv_usec / 1000;
 	return (time);
 }
 
-void ft_usleep(useconds_t time)
+void	ft_usleep(useconds_t time)
 {
-	long start;
+	long	start;
 
 	start = timestamp();
 	while ((timestamp() - start) < time)
 		usleep(50);
 }
-int init_philosophers(t_philo *philo, char **argv)
+
+int	init_philosophers(t_philo *philo, char **argv)
 {
 	int		i;
 	long	time;
@@ -119,10 +120,11 @@ int init_philosophers(t_philo *philo, char **argv)
 	return (0);
 }
 
-int init_data(t_philo *philo, char **argv)
+int	init_data(t_philo *philo, char **argv)
 {
 	init_philosophers(philo, argv);
-	if (philo->num_of_philos < 1 || philo->time_to_die < 0 || philo->time_to_eat < 0 || philo->time_to_sleep < 0)
+	if (philo->num_of_philos < 1 || philo->time_to_die < 0
+		|| philo->time_to_eat < 0 || philo->time_to_sleep < 0)
 		return (1);
 	if (argv[5])
 	{
@@ -135,17 +137,20 @@ int init_data(t_philo *philo, char **argv)
 	return (0);
 }
 
-void printing(t_philo *philo, char *str)
+void	printing(t_philo *philo, char *str)
 {
 	pthread_mutex_lock(&philo->m2);
 	printf("%ld %d %s\n", timestamp() - philo->first_timestamp, philo->id, str);
 	pthread_mutex_unlock(&philo->m2);
 }
+
 int	death_checker(t_philo *philo, int ac)
 {
-	int i;
+	int		i;
+	// long	time;
 
 	i = 0;
+	// time = timestamp() - philo[i].first_timestamp;
 	while (1)
 	{
 		pthread_mutex_lock(&philo[i].m1);
@@ -153,10 +158,11 @@ int	death_checker(t_philo *philo, int ac)
 			return (0);
 		if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
 		{
+			pthread_mutex_unlock(&philo[i].m1);
+			printf("%ld %d %s\n", timestamp() - philo[i].first_timestamp, philo[i].id, "died");
 			pthread_mutex_lock(&philo[i].m2);
 			philo[i].died = 1;
 			pthread_mutex_unlock(&philo[i].m2);
-			printf("%ld %d %s\n", timestamp() - philo[i].first_timestamp, philo[i].id, "died");
 			return (0);
 		}
 		pthread_mutex_unlock(&philo[i].m1);
@@ -164,7 +170,7 @@ int	death_checker(t_philo *philo, int ac)
 	return (1);
 }
 
-void eating(t_philo *philo)
+void	eating(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
 	printing(philo, "has taken a fork");
@@ -181,9 +187,9 @@ void eating(t_philo *philo)
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 }
-void *routine(void *void_philo)
+void	*routine(void *void_philo)
 {
-	t_philo *philo;
+	t_philo	*philo;
 	int		variable;
 
 	philo = (t_philo *)void_philo;
@@ -204,7 +210,7 @@ void *routine(void *void_philo)
 	}
 	return (NULL);
 }
-int starting_thread(pthread_t *threads, t_philo *philo, int ac)
+int	starting_thread(pthread_t *threads, t_philo *philo, int ac)
 {
 	int	i;
 	
@@ -216,6 +222,7 @@ int starting_thread(pthread_t *threads, t_philo *philo, int ac)
 			printf("Failed creating threads\n");
 			return 1;
 		}
+		usleep(1000);
 		i++;
 	}
 	if(!death_checker(philo, ac))
@@ -230,12 +237,12 @@ int starting_thread(pthread_t *threads, t_philo *philo, int ac)
 	return 0;
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	pthread_t *threads;
-	pthread_mutex_t *forks;
-	t_philo	*philo;
-	int variable;
+	int				variable;
+	pthread_t		*threads;
+	pthread_mutex_t	*forks;
+	t_philo			*philo;
 
 	if (argc < 5 || argc > 6 || checker(argv))
 	{
