@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 12:42:29 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 13:23:21 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,10 +147,9 @@ void	printing(t_philo *philo, char *str)
 int	death_checker(t_philo *philo, int ac)
 {
 	int		i;
-	// long	time;
+	long	time;
 
 	i = 0;
-	// time = timestamp() - philo[i].first_timestamp;
 	while (1)
 	{
 		pthread_mutex_lock(&philo[i].m1);
@@ -159,7 +158,8 @@ int	death_checker(t_philo *philo, int ac)
 		if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
 		{
 			pthread_mutex_unlock(&philo[i].m1);
-			printf("%ld %d %s\n", timestamp() - philo[i].first_timestamp, philo[i].id, "died");
+			time = timestamp() - philo[i].first_timestamp;
+			printf("%ld %d %s\n", time, philo[i].id, "died");
 			pthread_mutex_lock(&philo[i].m2);
 			philo[i].died = 1;
 			pthread_mutex_unlock(&philo[i].m2);
@@ -182,11 +182,10 @@ void	eating(t_philo *philo)
 	philo->last_meal = timestamp();
 	pthread_mutex_unlock(&philo->m1);
 	ft_usleep(philo->time_to_eat);
-	// pthread_mutex_lock(&philo->m1);
-	// pthread_mutex_unlock(&philo->m1);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 }
+
 void	*routine(void *void_philo)
 {
 	t_philo	*philo;
@@ -210,22 +209,23 @@ void	*routine(void *void_philo)
 	}
 	return (NULL);
 }
+
 int	starting_thread(pthread_t *threads, t_philo *philo, int ac)
 {
 	int	i;
-	
+
 	i = 0;
 	while (i < philo->num_of_philos)
 	{
 		if (pthread_create(&threads[i], NULL, routine, &philo[i]))
 		{
 			printf("Failed creating threads\n");
-			return 1;
+			return (1);
 		}
 		usleep(1000);
 		i++;
 	}
-	if(!death_checker(philo, ac))
+	if (!death_checker(philo, ac))
 		return (0);
 	i = 0;
 	while (i < philo->num_of_philos)
@@ -234,7 +234,7 @@ int	starting_thread(pthread_t *threads, t_philo *philo, int ac)
 			return (1);
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
 int	main(int argc, char **argv)
