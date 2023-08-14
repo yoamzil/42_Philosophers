@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 11:54:02 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 12:09:12 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int checker(char **argv)
 {
 	int i;
 	int j;
+	
 	i = 1;
 	while (argv[i])
 	{
@@ -97,7 +98,7 @@ void ft_usleep(useconds_t time)
 }
 int init_philosophers(t_philo *philo, char **argv)
 {
-	int i;
+	int		i;
 	long	time;
 
 	time = timestamp();
@@ -156,7 +157,6 @@ int	death_checker(t_philo *philo, int ac)
 			philo[i].died = 1;
 			pthread_mutex_unlock(&philo[i].m2);
 			printf("%ld %d %s\n", timestamp() - philo[i].first_timestamp, philo[i].id, "died");
-			// exit (0);
 			return (0);
 		}
 		pthread_mutex_unlock(&philo[i].m1);
@@ -184,27 +184,31 @@ void eating(t_philo *philo)
 void *routine(void *void_philo)
 {
 	t_philo *philo;
+	int		variable;
+
 	philo = (t_philo *)void_philo;
 	if (philo->id % 2 == 0)
 		ft_usleep(200);
 	pthread_mutex_lock(&philo->m2);
-	int d = philo->died;
+	variable = philo->died;
 	pthread_mutex_unlock(&philo->m2);
-	while (!d)
+	while (!variable)
 	{
 		pthread_mutex_lock(&philo->m2);
-		d = philo->died;
+		variable = philo->died;
 		pthread_mutex_unlock(&philo->m2);
 		printing(philo, "is thinking");
 		eating(philo);
 		printing(philo, "is sleeping");
 		ft_usleep(philo->time_to_sleep);
 	}
-	return NULL;
+	return (NULL);
 }
 int starting_thread(pthread_t *threads, t_philo *philo, int ac)
 {
-	int i = 0;
+	int	i;
+	
+	i = 0;
 	while (i < philo->num_of_philos)
 	{
 		if (pthread_create(&threads[i], NULL, routine, &philo[i]))
@@ -220,7 +224,7 @@ int starting_thread(pthread_t *threads, t_philo *philo, int ac)
 	while (i < philo->num_of_philos)
 	{
 		if (pthread_join(threads[i], NULL))
-			return 1;
+			return (1);
 		i++;
 	}
 	return 0;
@@ -233,12 +237,7 @@ int main(int argc, char **argv)
 	t_philo	*philo;
 	int variable;
 
-	if (argc < 5 || argc > 6)
-	{
-		printf("Error: Wrong number of arguments\n");
-		return (1);
-	}
-	if (checker(argv))
+	if (argc < 5 || argc > 6 || checker(argv))
 	{
 		printf("Error: Wrong arguments\n");
 		return (1);
@@ -247,15 +246,14 @@ int main(int argc, char **argv)
 	philo = malloc(sizeof(t_philo) * variable);
 	threads = malloc(sizeof(pthread_t) * variable);
 	forks = malloc(sizeof(pthread_mutex_t) * variable);
-
 	if (!philo || !threads || !forks)
 		return (1);
 	philo->num_of_philos = variable;
-	
 	if (init_data(philo, argv) || init_mutex(philo, forks))
 	{
 		printf("Error: Wrong arguments\n");
 		return (1);
 	}
 	starting_thread(threads, philo, argc);
+	return (0);
 }
