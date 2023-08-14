@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 10:48:12 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 11:16:07 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,9 @@ int init_data(t_philo *philo, char **argv)
 
 void printing(t_philo *philo, char *str)
 {
-	// pthread_mutex_lock(&philo->m2);
+	pthread_mutex_lock(&philo->m2);
 	printf("%ld %d %s\n", timestamp() - philo->first_timestamp, philo->id, str);
-	// pthread_mutex_unlock(&philo->m2);
+	pthread_mutex_unlock(&philo->m2);
 }
 int	death_checker(t_philo *philo, int ac)
 {
