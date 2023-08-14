@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 09:55:23 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 10:48:12 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,18 +150,19 @@ int	death_checker(t_philo *philo, int ac)
 	{
 		// printf("ac: %d  num of meals: %d   last arg: %d\n", ac, philo[i].num_of_meals, philo->must_eat);
 		// exit (0);
+		pthread_mutex_lock(&philo[i].m1);
 		if (ac == 6 && philo[i].num_of_meals > philo[i].must_eat)
 			return (0);
 		if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
 		{
-			// pthread_mutex_lock(&philo[i].m1);
+			pthread_mutex_lock(&philo[i].m2);
 			philo[i].died = 1;
-			// pthread_mutex_unlock(&philo[i].m1);
-			// pthread_mutex_lock(&philo[i].m2);
+			pthread_mutex_unlock(&philo[i].m2);
 			printf("%ld %d %s\n", timestamp() - philo[i].first_timestamp, philo[i].id, "died");
 			// exit (0);
 			return (0);
 		}
+		pthread_mutex_unlock(&philo[i].m1);
 		// printf("num of meals: %d\n", philo[i].num_of_meals);
 		// i++;
 		// if (i == philo->num_of_philos)
@@ -177,10 +178,10 @@ void eating(t_philo *philo)
 	pthread_mutex_lock(philo->right_fork);
 	printing(philo, "has taken a fork");
 	printing(philo, "is eating");
-	// pthread_mutex_lock(&philo->m1);
+	pthread_mutex_lock(&philo->m1);
 	philo->num_of_meals++;
 	philo->last_meal = timestamp();
-	// pthread_mutex_unlock(&philo->m1);
+	pthread_mutex_unlock(&philo->m1);
 	ft_usleep(philo->time_to_eat);
 	// pthread_mutex_lock(&philo->m1);
 	// pthread_mutex_unlock(&philo->m1);
@@ -193,13 +194,20 @@ void *routine(void *void_philo)
 	philo = (t_philo *)void_philo;
 	if (philo->id % 2 == 0)
 		ft_usleep(200);
-	while (!philo->died)
+	pthread_mutex_lock(&philo->m2);
+	int d = philo->died;
+	pthread_mutex_unlock(&philo->m2);
+	while (!d)
 	{
+		pthread_mutex_lock(&philo->m2);
+		d = philo->died;
+		pthread_mutex_unlock(&philo->m2);
 		printing(philo, "is thinking");
 		eating(philo);
 		printing(philo, "is sleeping");
 		ft_usleep(philo->time_to_sleep);
 	}
+	// pthread_mutex_unlock(&philo->m2);
 	return NULL;
 }
 int starting_thread(pthread_t *threads, t_philo *philo, int ac)
