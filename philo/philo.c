@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 11:16:07 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 11:54:02 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,11 +145,8 @@ int	death_checker(t_philo *philo, int ac)
 	int i;
 
 	i = 0;
-	// (void)ac;
 	while (1)
 	{
-		// printf("ac: %d  num of meals: %d   last arg: %d\n", ac, philo[i].num_of_meals, philo->must_eat);
-		// exit (0);
 		pthread_mutex_lock(&philo[i].m1);
 		if (ac == 6 && philo[i].num_of_meals > philo[i].must_eat)
 			return (0);
@@ -163,10 +160,6 @@ int	death_checker(t_philo *philo, int ac)
 			return (0);
 		}
 		pthread_mutex_unlock(&philo[i].m1);
-		// printf("num of meals: %d\n", philo[i].num_of_meals);
-		// i++;
-		// if (i == philo->num_of_philos)
-		// 	i = 0;
 	}
 	return (1);
 }
@@ -207,7 +200,6 @@ void *routine(void *void_philo)
 		printing(philo, "is sleeping");
 		ft_usleep(philo->time_to_sleep);
 	}
-	// pthread_mutex_unlock(&philo->m2);
 	return NULL;
 }
 int starting_thread(pthread_t *threads, t_philo *philo, int ac)
@@ -231,25 +223,8 @@ int starting_thread(pthread_t *threads, t_philo *philo, int ac)
 			return 1;
 		i++;
 	}
-		printf("hmaaa\n");
-		exit (0);
-	// exit_launcher(data);
-
 	return 0;
 }
-// int	threads_join(pthread_t *threads, t_philo *philo)
-// {
-// 	int i;
-
-// 	i = 0;
-// 	while (i < philo->num_of_philos)
-// 	{
-// 		if (pthread_join(threads[i++], NULL))
-// 			return 1;
-// 	}
-// 	return 0;
-// }
-
 
 int main(int argc, char **argv)
 {
@@ -283,6 +258,4 @@ int main(int argc, char **argv)
 		return (1);
 	}
 	starting_thread(threads, philo, argc);
-	
-	// threads_join(threads, philo);
 }
