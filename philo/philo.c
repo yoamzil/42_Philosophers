@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/13 19:59:04 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 09:43:50 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,14 +140,17 @@ void printing(t_philo *philo, char *str)
 	printf("%ld %d %s\n", timestamp() - philo->first_timestamp, philo->id, str);
 	// pthread_mutex_unlock(&philo->m2);
 }
-int	death_checker(t_philo *philo)
+int	death_checker(t_philo *philo, int ac)
 {
 	int i;
 
 	i = 0;
-	while (i < philo->num_of_philos)
+	(void)ac;
+	while (1)
 	{
-		if (philo->num_of_philos == 6 && philo[i].num_of_meals > philo[i].must_eat)
+		// printf("ac: %d  num of meals: %d   last arg: %d\n", ac, philo[i].num_of_meals, philo->must_eat);
+		// exit (0);
+		if (ac == 6 && philo[i].num_of_meals > philo[i].must_eat)
 			return (0);
 		if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
 		{
@@ -159,9 +162,10 @@ int	death_checker(t_philo *philo)
 			// exit (0);
 			return (0);
 		}
-		i++;
-		if (i == philo->num_of_philos)
-			i = 0;
+		// printf("num of meals: %d\n", philo[i].num_of_meals);
+		// i++;
+		// if (i == philo->num_of_philos)
+		// 	i = 0;
 	}
 	return (1);
 }
@@ -174,11 +178,11 @@ void eating(t_philo *philo)
 	printing(philo, "has taken a fork");
 	printing(philo, "is eating");
 	// pthread_mutex_lock(&philo->m1);
+	philo->num_of_meals++;
 	philo->last_meal = timestamp();
 	// pthread_mutex_unlock(&philo->m1);
 	usleep(philo->time_to_eat * 1000);
 	// pthread_mutex_lock(&philo->m1);
-	philo->num_of_meals++;
 	// pthread_mutex_unlock(&philo->m1);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
@@ -198,7 +202,7 @@ void *routine(void *void_philo)
 	}
 	return NULL;
 }
-int starting_thread(pthread_t *threads, t_philo *philo)
+int starting_thread(pthread_t *threads, t_philo *philo, int ac)
 {
 	int i = 0;
 	while (i < philo->num_of_philos)
@@ -210,7 +214,7 @@ int starting_thread(pthread_t *threads, t_philo *philo)
 		}
 		i++;
 	}
-	if(!death_checker(philo))
+	if(!death_checker(philo, ac))
 		return (0);
 	i = 0;
 	while (i < philo->num_of_philos)
@@ -270,7 +274,7 @@ int main(int argc, char **argv)
 		printf("Error: Wrong arguments\n");
 		return (1);
 	}
-	starting_thread(threads, philo);
+	starting_thread(threads, philo, argc);
 	
 	// threads_join(threads, philo);
 }
