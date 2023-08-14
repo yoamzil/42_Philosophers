@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 09:43:50 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/14 09:55:23 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ int	death_checker(t_philo *philo, int ac)
 	int i;
 
 	i = 0;
-	(void)ac;
+	// (void)ac;
 	while (1)
 	{
 		// printf("ac: %d  num of meals: %d   last arg: %d\n", ac, philo[i].num_of_meals, philo->must_eat);
@@ -181,7 +181,7 @@ void eating(t_philo *philo)
 	philo->num_of_meals++;
 	philo->last_meal = timestamp();
 	// pthread_mutex_unlock(&philo->m1);
-	usleep(philo->time_to_eat * 1000);
+	ft_usleep(philo->time_to_eat);
 	// pthread_mutex_lock(&philo->m1);
 	// pthread_mutex_unlock(&philo->m1);
 	pthread_mutex_unlock(philo->left_fork);
@@ -192,13 +192,13 @@ void *routine(void *void_philo)
 	t_philo *philo;
 	philo = (t_philo *)void_philo;
 	if (philo->id % 2 == 0)
-		usleep(200);
+		ft_usleep(200);
 	while (!philo->died)
 	{
 		printing(philo, "is thinking");
 		eating(philo);
 		printing(philo, "is sleeping");
-		usleep(philo->time_to_sleep * 1000);
+		ft_usleep(philo->time_to_sleep);
 	}
 	return NULL;
 }
