@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:40:32 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 14:44:36 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/16 13:43:28 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,20 @@ int	init_data(t_philo *philo, char **argv)
 	else
 		philo->must_eat = -1;
 	return (0);
+}
+
+void	destroy(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks)
+{
+	int	i;
+
+	i = 0;
+	while (i < philo->num_of_philos)
+	{
+		pthread_mutex_destroy(&philo[i].m1);
+		pthread_mutex_destroy(&philo[i].m2);
+		i++;
+	}
+	free(philo);
+	free(threads);
+	free(forks);
 }

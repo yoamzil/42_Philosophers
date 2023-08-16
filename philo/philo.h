@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 12:09:58 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 14:42:05 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/16 13:41:16 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,6 @@ void	ft_usleep(useconds_t time);
 int		init_data(t_philo *philo, char **argv);
 int		init_philosophers(t_philo *philo, char **argv);
 int		init_mutex(t_philo *philo, pthread_mutex_t *forks);
+void	destroy(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks);
 
 #endif

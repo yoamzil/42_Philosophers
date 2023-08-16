@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 01:36:27 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/14 14:43:39 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/08/16 13:43:09 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,5 +130,6 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	starting_thread(threads, philo, argc);
+	destroy(philo, threads, forks);
 	return (0);
 }
