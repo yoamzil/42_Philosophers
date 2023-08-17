@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -pthread #-fsanitize=thread
 NAME = philo
-SRCS = $(wildcard *.c)
+SRCS = philo.c init.c tools.c
 OBJS = $(SRCS:.c=.o)
 
 %.o: %.c
