@@ -33,11 +33,14 @@ int	init_mutex(t_philo *philo, pthread_mutex_t *forks)
 
 int	init_philosophers(t_philo *philo, char **argv)
 {
-	int		i;
-	long	time;
+	int			i;
+	long		time;
+	t_checker	*check;
 
 	time = timestamp();
 	i = 0;
+	check = malloc(sizeof(t_checker));
+	check->is_died = 0;
 	while (i < philo->num_of_philos)
 	{
 		philo[i].first_timestamp = time;
@@ -49,6 +52,7 @@ int	init_philosophers(t_philo *philo, char **argv)
 		philo[i].time_to_die = ft_atoi(argv[2]);
 		philo[i].time_to_eat = ft_atoi(argv[3]);
 		philo[i].time_to_sleep = ft_atoi(argv[4]);
+		philo[i].check = check;
 		i++;
 	}
 	return (0);

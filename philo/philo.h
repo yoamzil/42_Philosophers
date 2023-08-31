@@ -19,6 +19,11 @@
 # include <sys/time.h>
 # include <unistd.h>
 
+typedef struct s_checker
+{
+	int	is_died;
+}	t_checker;
+
 typedef struct s_philo
 {
 	int				id;
@@ -38,6 +43,7 @@ typedef struct s_philo
 	int				must_eat;
 	long			first_timestamp;
 	long			current_timestamp;
+	t_checker		*check;
 }	t_philo;
 
 void	printing(t_philo *philo, char *str);

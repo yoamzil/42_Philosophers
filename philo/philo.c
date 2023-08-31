@@ -20,20 +20,26 @@ int	death_checker(t_philo *philo, int ac)
 	i = 0;
 	while (1)
 	{
-		pthread_mutex_lock(&philo[i].m1);
-		if (ac == 6 && philo[i].num_of_meals > philo[i].must_eat)
-			return (0);
-		if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
+		i = 0;
+		while (i < philo->num_of_philos)
 		{
+			pthread_mutex_lock(&philo[i].m1);
+			if (ac == 6 && philo[i].num_of_meals > philo[i].must_eat)
+				return (0);
+			if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
+			{
+				philo[i].died = 1;
+				philo->check->is_died = 1;
+				pthread_mutex_unlock(&philo[i].m1);
+				time = timestamp() - philo[i].first_timestamp;
+				printf("%ld %d %s\n", time, philo[i].id, "died");
+				pthread_mutex_lock(&philo[i].m2);
+				pthread_mutex_unlock(&philo[i].m2);
+				return (0);
+			}
 			pthread_mutex_unlock(&philo[i].m1);
-			time = timestamp() - philo[i].first_timestamp;
-			printf("%ld %d %s\n", time, philo[i].id, "died");
-			pthread_mutex_lock(&philo[i].m2);
-			philo[i].died = 1;
-			pthread_mutex_unlock(&philo[i].m2);
-			return (0);
+			i++;
 		}
-		pthread_mutex_unlock(&philo[i].m1);
 	}
 	return (1);
 }
@@ -61,9 +67,9 @@ void	*routine(void *void_philo)
 
 	philo = (t_philo *)void_philo;
 	if (philo->id % 2 == 0)
-		ft_usleep(200);
+		ft_usleep(philo->time_to_eat);
 	pthread_mutex_lock(&philo->m2);
-	variable = philo->died;
+	variable = philo->check->is_died;
 	pthread_mutex_unlock(&philo->m2);
 	while (!variable)
 	{
@@ -90,7 +96,6 @@ int	starting_thread(pthread_t *threads, t_philo *philo, int ac)
 			printf("Failed creating threads\n");
 			return (1);
 		}
-		usleep(1000);
 		i++;
 	}
 	if (!death_checker(philo, ac))
