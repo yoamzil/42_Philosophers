@@ -66,7 +66,7 @@ int	init_data(t_philo *philo, char **argv)
 		return (1);
 	if (argv[5])
 	{
-		philo->must_eat = ft_atoi(argv[5]);
+		philo->must_eat = ft_atoi(argv[5]) + 2;
 		if (philo->must_eat <= 0)
 			return (1);
 	}

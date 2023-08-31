@@ -23,9 +23,9 @@ int	death_checker(t_philo *philo, int ac)
 		i = 0;
 		while (i < philo->num_of_philos)
 		{
-			pthread_mutex_lock(&philo[i].m1);
-			if (ac == 6 && philo[i].num_of_meals > philo[i].must_eat)
+			if (ac == 6 && philo[i].num_of_meals >= philo->must_eat)
 				return (0);
+			pthread_mutex_lock(&philo[i].m1);
 			if ((timestamp() - philo[i].last_meal) >= philo[i].time_to_die)
 			{
 				philo[i].died = 1;
