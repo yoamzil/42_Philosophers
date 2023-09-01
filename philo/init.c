@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:40:32 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/09/01 17:20:23 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/09/01 21:01:47 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,15 +75,15 @@ int	init_data(t_philo *philo, char **argv)
 	return (0);
 }
 
-void	destroy(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks)
-{
-	pthread_mutex_unlock(&philo->check->m_print);
-	pthread_mutex_destroy(&philo->check->m2);
-	pthread_mutex_destroy(&philo->check->m_print);
-	(void)philo;
-	// (void)threads;
-	// (void)forks;
-	// free(philo);
-	free(threads);
-	free(forks);
-}
+// void	destroy(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks)
+// {
+// 	pthread_mutex_unlock(&philo->check->m_print);
+// 	pthread_mutex_destroy(&philo->check->m2);
+// 	pthread_mutex_destroy(&philo->check->m_print);
+// 	(void)philo;
+// 	// (void)threads;
+// 	// (void)forks;
+// 	// free(philo);
+// 	free(threads);
+// 	free(forks);
+// }
