@@ -61,10 +61,10 @@ int	checker(char **argv)
 
 void	printing(t_philo *philo, char *str)
 {
-	pthread_mutex_lock(&philo->m2);
+	pthread_mutex_lock(&philo->check->m_print);
 	if (!philo->check->is_died)
 		printf("%ld %d %s\n", timestamp() - philo->first_timestamp, philo->id, str);
-	pthread_mutex_unlock(&philo->m2);
+	pthread_mutex_unlock(&philo->check->m_print);
 }
 
 long	timestamp(void)

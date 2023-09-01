@@ -24,10 +24,10 @@ int	init_mutex(t_philo *philo, pthread_mutex_t *forks)
 	{
 		philo[i].left_fork = &forks[i];
 		philo[i].right_fork = &forks[(i + 1) % philo->num_of_philos];
+		// pthread_mutex_init(&philo[i].check->m_print, NULL);
+		// pthread_mutex_init(&philo[i].check->m2, NULL);
 		i++;
 	}
-	pthread_mutex_init(&philo[0].m1, NULL);
-	pthread_mutex_init(&philo[0].m2, NULL);
 	return (0);
 }
 
@@ -41,6 +41,8 @@ int	init_philosophers(t_philo *philo, char **argv)
 	i = 0;
 	check = malloc(sizeof(t_checker));
 	check->is_died = 0;
+	pthread_mutex_init(&check->m_print, NULL);
+	pthread_mutex_init(&check->m2, NULL);
 	while (i < philo->num_of_philos)
 	{
 		philo[i].first_timestamp = time;
@@ -82,9 +84,9 @@ void	destroy(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks)
 	i = 0;
 	while (i < philo->num_of_philos)
 	{
-		pthread_mutex_destroy(&philo[i].m1);
-		pthread_mutex_destroy(&philo[i].m2);
-		i++;
+		// pthread_mutex_destroy(&philo[i]->checkm_print);
+		// pthread_mutex_destroy(&philo[i].m2);
+		// i++;
 	}
 	free(philo);
 	free(threads);

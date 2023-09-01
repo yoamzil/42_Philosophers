@@ -21,7 +21,9 @@
 
 typedef struct s_checker
 {
-	int	is_died;
+	int				is_died;
+	pthread_mutex_t	m_print;
+	pthread_mutex_t	m2;
 }	t_checker;
 
 typedef struct s_philo
@@ -34,8 +36,6 @@ typedef struct s_philo
 	int				time_left;
 	int				num_of_philos;
 	long			last_meal;
-	pthread_mutex_t	m1;
-	pthread_mutex_t	m2;
 	int				time_to_sleep;
 	int				died;
 	int				time_to_die;
