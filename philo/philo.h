@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 12:09:58 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/16 13:41:16 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/09/01 17:09:28 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 typedef struct s_checker
 {
-	int				is_died;
+	int				has_died;
 	pthread_mutex_t	m_print;
 	pthread_mutex_t	m2;
 }	t_checker;
@@ -55,5 +55,6 @@ int		init_data(t_philo *philo, char **argv);
 int		init_philosophers(t_philo *philo, char **argv);
 int		init_mutex(t_philo *philo, pthread_mutex_t *forks);
 void	destroy(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks);
+int		death_checker(t_philo *philo, int ac);
 
 #endif

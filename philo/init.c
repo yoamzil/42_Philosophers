@@ -6,7 +6,7 @@
 /*   By: yoamzil <yoamzil@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:40:32 by yoamzil           #+#    #+#             */
-/*   Updated: 2023/08/16 13:43:28 by yoamzil          ###   ########.fr       */
+/*   Updated: 2023/09/01 17:20:23 by yoamzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ int	init_mutex(t_philo *philo, pthread_mutex_t *forks)
 	{
 		philo[i].left_fork = &forks[i];
 		philo[i].right_fork = &forks[(i + 1) % philo->num_of_philos];
-		// pthread_mutex_init(&philo[i].check->m_print, NULL);
-		// pthread_mutex_init(&philo[i].check->m2, NULL);
 		i++;
 	}
 	return (0);
@@ -40,7 +38,7 @@ int	init_philosophers(t_philo *philo, char **argv)
 	time = timestamp();
 	i = 0;
 	check = malloc(sizeof(t_checker));
-	check->is_died = 0;
+	check->has_died = 0;
 	pthread_mutex_init(&check->m_print, NULL);
 	pthread_mutex_init(&check->m2, NULL);
 	while (i < philo->num_of_philos)
@@ -68,7 +66,7 @@ int	init_data(t_philo *philo, char **argv)
 		return (1);
 	if (argv[5])
 	{
-		philo->must_eat = ft_atoi(argv[5]) + 2;
+		philo->must_eat = ft_atoi(argv[5]) + 1;
 		if (philo->must_eat <= 0)
 			return (1);
 	}
@@ -79,16 +77,13 @@ int	init_data(t_philo *philo, char **argv)
 
 void	destroy(t_philo *philo, pthread_t *threads, pthread_mutex_t *forks)
 {
-	int	i;
-
-	i = 0;
-	while (i < philo->num_of_philos)
-	{
-		// pthread_mutex_destroy(&philo[i]->checkm_print);
-		// pthread_mutex_destroy(&philo[i].m2);
-		// i++;
-	}
-	free(philo);
+	pthread_mutex_unlock(&philo->check->m_print);
+	pthread_mutex_destroy(&philo->check->m2);
+	pthread_mutex_destroy(&philo->check->m_print);
+	(void)philo;
+	// (void)threads;
+	// (void)forks;
+	// free(philo);
 	free(threads);
 	free(forks);
 }

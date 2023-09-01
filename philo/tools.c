@@ -61,9 +61,12 @@ int	checker(char **argv)
 
 void	printing(t_philo *philo, char *str)
 {
+	long	time;
+
 	pthread_mutex_lock(&philo->check->m_print);
-	if (!philo->check->is_died)
-		printf("%ld %d %s\n", timestamp() - philo->first_timestamp, philo->id, str);
+	time = timestamp() - philo->first_timestamp;
+	if (!philo->check->has_died)
+		printf("%ld %d %s\n", time, philo->id, str);
 	pthread_mutex_unlock(&philo->check->m_print);
 }
 
